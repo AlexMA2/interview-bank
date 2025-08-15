@@ -1,0 +1,37 @@
+@use "variables" as vars;
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.search-container .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    pointer-events: none;
+    font-size: 1.1rem;
+    color: vars.$slate-700;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+    border: 1px solid vars.$slate-400;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: vars.$primary-500;
+    box-shadow: 0 0 0 2px vars.$primary-800;
+}
+
+.search-container input:disabled {
+    background: vars.$slate-200;
+    cursor: not-allowed;
+}
