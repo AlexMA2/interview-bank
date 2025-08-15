@@ -1,0 +1,64 @@
+{
+    "app": {
+        "title": "Banco"
+    },
+    "search": {
+        "label": "Buscar"
+    },
+    "product": {
+        "name": "Nombre del producto"
+    },
+    "description": {
+        "label": "Descripción"
+    },
+    "release": {
+        "date": "Fecha de liberación",
+        "description": "Fecha a liberar el producto para los clientes en general"
+    },
+    "revision": {
+        "date": "Fecha de revisión",
+        "description": "Fecha de revisión del producto para cambiar términos y condiciones"
+    },
+    "results": {
+        "label": "Resultados"
+    },
+    "logo": {
+        "label": "Logo",
+        "description": "Url de un logo representativo para el producto"
+    },
+    "id": {
+        "label": "ID",
+        "description": "Identificador único del producto"
+    },
+    "send": {
+        "label": "Enviar"
+    },
+    "restart": {
+        "label": "Reiniciar"
+    },
+    "form": {
+        "register": "Formulario de registro"
+    },
+    "add": {
+        "add": "Agregar"
+    },
+    "warning": {
+        "delete_product": "¿Estás seguro de eliminar el producto {{ value }}?"
+    },
+    "confirm,": {
+        "label": "Confirmar"
+    },
+    "cancel": {
+        "label": "Cancelar"
+    },
+    "form_errors": {
+        "required": "Este campo es requerido",
+        "date_format": "El formato debe ser YYYY-MM-DD",
+        "no_url": "El campo debe ser una url",
+        "unique": "El campo debe ser único",
+        "min_length": "El campo debe tener al menos {{ value }} caracteres",
+        "max_length": "El campo debe tener menos de {{ value }} caracteres",
+        "higher_date": "La fecha debe ser igual o mayor a la fecha actual",
+        "one_year_after_release": "La fecha debe ser exactamente un año posterior a la fecha de liberación"
+    }
+}
