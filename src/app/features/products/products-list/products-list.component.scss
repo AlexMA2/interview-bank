@@ -1,0 +1,11 @@
+@use "variables" as vars;
+main {
+    background-color: vars.$slate-200;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex: 1;
+    min-height: 93vh;
+}
