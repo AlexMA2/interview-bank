@@ -1,1 +1,56 @@
-<p>products-details works!</p>
+<main class="main-container">
+    <article class="main-form">
+        <header class="main-form__header">
+            <h2>{{ "form.register" | translate }}</h2>
+        </header>
+        <form [formGroup]="formGroup" class="main-form__body">
+            <div class="form-fields">
+                <app-input
+                    formControlName="id"
+                    [label]="'id.label' | translate"
+                    [placeholder]="'id.description' | translate"
+                    [type]="'text'"
+                ></app-input>
+                <app-input
+                    formControlName="name"
+                    [label]="'product.name' | translate"
+                    [placeholder]="'product.name' | translate"
+                    [type]="'text'"
+                ></app-input>
+            </div>
+            <div class="form-fields">
+                <app-input
+                    formControlName="description"
+                    [label]="'description.label' | translate"
+                    [placeholder]="'description.label' | translate"
+                    [type]="'text'"
+                ></app-input>
+                <app-input
+                    formControlName="logo"
+                    [label]="'logo.label' | translate"
+                    [placeholder]="'logo.description' | translate"
+                    [type]="'text'"
+                ></app-input>
+            </div>
+            <div class="form-fields">
+                <app-date-picker
+                    formControlName="release"
+                    [label]="'release.date' | translate"
+                ></app-date-picker>
+              <app-input
+                    formControlName="revision"
+                    [label]="'revision.label' | translate"
+                    [placeholder]="'revision.description' | translate"
+                    [type]="'text'"
+                ></app-input>
+            </div>
+        </form>
+        <footer class="main-form__footer">
+            <app-button
+                [color]="'secondary'"
+                [label]="'restart.label' | translate"
+            ></app-button>
+            <app-button [label]="'send.label' | translate"></app-button>
+        </footer>
+    </article>
+</main>
