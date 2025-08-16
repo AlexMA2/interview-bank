@@ -40,7 +40,7 @@
         "register": "Formulario de registro"
     },
     "add": {
-        "add": "Agregar"
+        "label": "Agregar"
     },
     "warning": {
         "delete_product": "¿Estás seguro de eliminar el producto {{ value }}?"
