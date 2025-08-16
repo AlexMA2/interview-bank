@@ -1,0 +1,21 @@
+<div class="date-picker-container">
+    @if (label()) {
+    <label [for]="customId()">{{ label() }}</label>
+    }
+
+    <input
+        [id]="customId()"
+        type="date"
+        class="date-picker-input"
+        [formControl]="date"
+        (change)="onDateChange($event)"
+        (blur)="onTouched()"
+    />
+    <div class="error-messages">
+        @for (error of activeErrors() | keyvalue; track error.key) {
+        <div class="error-message">
+            {{ error.value }}
+        </div>
+        }
+    </div>
+</div>
