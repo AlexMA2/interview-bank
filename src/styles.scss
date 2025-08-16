@@ -55,6 +55,7 @@ h6 {
 .main-container {
     background-color: vars.$slate-200;
     width: 100%;
+    overflow-x: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -77,11 +78,19 @@ h6 {
     &.btn-primary {
         background-color: vars.$primary-500;
         color: vars.$slate-800;
+
+        &:not(:disabled):hover {
+            background-color: vars.$primary-600;
+        }
     }
 
     &.btn-secondary {
         background-color: vars.$slate-400;
         color: vars.$slate-800;
+
+        &:not(:disabled):hover {
+            background-color: vars.$slate-500;
+        }
     }
 }
 
@@ -89,6 +98,13 @@ h6 {
     background-color: vars.$slate-500;
     cursor: not-allowed;
 }
-.btn:not(:disabled):hover {
-    background-color: vars.$primary-600;
+
+.input-error {
+    color: vars.$error-500;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.input-error-border {
+    border: 1px solid vars.$error-500 !important;
 }

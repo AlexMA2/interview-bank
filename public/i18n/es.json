@@ -11,6 +11,10 @@
     "description": {
         "label": "Descripción"
     },
+    "show_of_total": {
+        "label": "Mostrar",
+        "of": "de un total de {{ value }}"
+    },
     "release": {
         "date": "Fecha de liberación",
         "description": "Fecha a liberar el producto para los clientes en general"
@@ -20,7 +24,8 @@
         "description": "Fecha de revisión del producto para cambiar términos y condiciones"
     },
     "results": {
-        "label": "Resultados"
+        "label": "Resultados",
+        "no_results": "No se encontraron resultados"
     },
     "logo": {
         "label": "Logo",
@@ -31,7 +36,8 @@
         "description": "Identificador único del producto"
     },
     "send": {
-        "label": "Enviar"
+        "label": "Enviar",
+        "ing": "Enviando..."
     },
     "restart": {
         "label": "Reiniciar"
@@ -45,7 +51,7 @@
     "warning": {
         "delete_product": "¿Estás seguro de eliminar el producto {{ value }}?"
     },
-    "confirm,": {
+    "confirm": {
         "label": "Confirmar"
     },
     "cancel": {
@@ -53,12 +59,22 @@
     },
     "form_errors": {
         "required": "Este campo es requerido",
-        "date_format": "El formato debe ser YYYY-MM-DD",
+        "date_format": "El formato de fecha debe ser {{ value }}",
         "no_url": "El campo debe ser una url",
         "unique": "El campo debe ser único",
+        "id_exists": "Este ID ya existe",
         "min_length": "El campo debe tener al menos {{ value }} caracteres",
         "max_length": "El campo debe tener menos de {{ value }} caracteres",
-        "higher_date": "La fecha debe ser igual o mayor a la fecha actual",
+        "higher_date": "La fecha debe ser igual o mayor a {{ value }}",
         "one_year_after_release": "La fecha debe ser exactamente un año posterior a la fecha de liberación"
+    },
+    "time_system": {
+        "today": "Hoy"
+    },
+    "edit": {
+        "label": "Editar"
+    },
+    "delete": {
+        "label": "Eliminar"
     }
 }

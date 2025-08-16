@@ -2,22 +2,15 @@
     @if (label()) {
     <label [for]="customId()">{{ label() }}</label>
     }
-    <input
-        [id]="customId()"
-        [type]="type()"
-        [placeholder]="placeholder() ?? ''"
-        [value]="value()"
-        (input)="onInput($event)"
-        (blur)="onBlur()"
-        [disabled]="isDisabled()"
-    />
+    <input [id]="customId()" [type]="type()" [class]="hasError() ? 'input-error-border' : ''"
+        [placeholder]="placeholder() ?? ''" [value]="value()" (input)="onInput($event)" (blur)="onBlur()"
+        [disabled]="isDisabled()" />
 
-    @for (entry of (errorMessages() | keyvalue); track entry.key) {
-        @if (errors && errors[entry.key]) {
-            <span class="input-error"> {{ entry.value }} </span>
-        }
-    }
-    @if (hint()) {
-        <span class="input-hint"> {{ hint() }} </span>
+    <div class="error-container" [style.height]="sizing() === 'fixed' ? '1rem' : '0'">
+        <ng-content select="error-messages"></ng-content>
+    </div>
+
+    @if (hint() ) {
+    <span class="input-hint"> {{ hint() }} </span>
     }
 </div>

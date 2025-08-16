@@ -16,6 +16,13 @@ export const routes: Routes = [
             ).then((c) => c.ProductsDetailsComponent),
     },
     {
+        path: 'products/details/:id',
+        loadComponent: () =>
+            import(
+                './features/products/products-details/products-details.component'
+            ).then((c) => c.ProductsDetailsComponent),
+    },
+    {
         path: '**',
         redirectTo: 'products',
     },

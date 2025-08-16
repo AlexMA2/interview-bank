@@ -1,56 +1,161 @@
 <main class="main-container">
     <article class="main-form">
         <header class="main-form__header">
+            <a class="btn btn-primary" routerLink="/products">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="currentColor" fill-rule="evenodd"
+                        d="M10.53 5.47a.75.75 0 0 1 0 1.06l-4.72 4.72H20a.75.75 0 0 1 0 1.5H5.81l4.72 4.72a.75.75 0 1 1-1.06 1.06l-6-6a.75.75 0 0 1 0-1.06l6-6a.75.75 0 0 1 1.06 0"
+                        clip-rule="evenodd" />
+                </svg></a>
             <h2>{{ "form.register" | translate }}</h2>
         </header>
         <form [formGroup]="formGroup" class="main-form__body">
             <div class="form-fields">
-                <app-input
-                    formControlName="id"
-                    [label]="'id.label' | translate"
-                    [placeholder]="'id.description' | translate"
-                    [type]="'text'"
-                ></app-input>
-                <app-input
-                    formControlName="name"
-                    [label]="'product.name' | translate"
-                    [placeholder]="'product.name' | translate"
-                    [type]="'text'"
-                ></app-input>
+                <app-input formControlName="id" [label]="'id.label' | translate"
+                    [placeholder]="'id.description' | translate" [type]="'text'"
+                    [hasError]="formGroup.get('id')?.touched ? formGroup.get('id')?.errors : null">
+                    <div ngProjectAs="error-messages">
+                        @if (formGroup.get('id')?.errors?.['idExists']) {
+                        <span class="input-error">
+                            {{ "form_errors.id_exists" | translate : {
+                            value: formGroup.get('id')?.errors?.['minlength']?.requiredLength
+                            } }}
+                        </span>
+                        }
+                        @else if (formGroup.get('id')?.errors?.['minlength']) {
+                        <span class="input-error">
+                            {{ "form_errors.min_length" | translate : {
+                            value: formGroup.get('id')?.errors?.['minlength']?.requiredLength
+                            } }}
+                        </span>
+                        }
+                        @else if (formGroup.get('id')?.errors?.['maxlength']) {
+                        <span class="input-error">
+                            {{ "form_errors.max_length" | translate : {
+                            value: formGroup.get('id')?.errors?.['maxlength']?.requiredLength
+                            } }}
+                        </span>
+                        }
+                        @else if ( formGroup.get('id')?.touched && formGroup.get('id')?.errors?.['required'] ) {
+                        <span class="input-error">
+                            {{ "form_errors.required" | translate }}
+                        </span>
+                        }
+                    </div>
+                </app-input>
+                <app-input formControlName="name" [label]="'product.name' | translate"
+                    [placeholder]="'product.name' | translate" [type]="'text'"
+                    [hasError]="formGroup.get('name')?.touched ? formGroup.get('name')?.errors : null">
+                    <div ngProjectAs="error-messages">
+                        @if (formGroup.get('name')?.errors?.['minlength']) {
+                        <span class="input-error">
+                            {{ "form_errors.min_length" | translate : {
+                            value: formGroup.get('name')?.errors?.['minlength']?.requiredLength
+                            } }}
+                        </span>
+                        }
+                        @else if (formGroup.get('name')?.errors?.['maxlength']) {
+                        <span class="input-error">
+                            {{ "form_errors.max_length" | translate : {
+                            value: formGroup.get('name')?.errors?.['maxlength']?.requiredLength
+                            } }}
+                        </span>
+                        }
+                        @else if ( formGroup.get('name')?.touched && formGroup.get('name')?.errors?.['required'] ) {
+                        <span class="input-error">
+                            {{ "form_errors.required" | translate }}
+                        </span>
+                        }
+                    </div>
+                </app-input>
+
             </div>
             <div class="form-fields">
-                <app-input
-                    formControlName="description"
-                    [label]="'description.label' | translate"
-                    [placeholder]="'description.label' | translate"
-                    [type]="'text'"
-                ></app-input>
-                <app-input
-                    formControlName="logo"
-                    [label]="'logo.label' | translate"
-                    [placeholder]="'logo.description' | translate"
-                    [type]="'text'"
-                ></app-input>
+                <app-input formControlName="description" [label]="'description.label' | translate"
+                    [placeholder]="'description.label' | translate" [type]="'text'"
+                    [hasError]="formGroup.get('description')?.touched ? formGroup.get('description')?.errors : null">
+                    <div ngProjectAs="error-messages">
+                        @if (formGroup.get('description')?.errors?.['minlength']) {
+                        <span class="input-error">
+                            {{ "form_errors.min_length" | translate : {
+                            value: formGroup.get('description')?.errors?.['minlength']?.requiredLength
+                            } }}
+                        </span>
+                        }
+                        @else if (formGroup.get('description')?.errors?.['maxlength']) {
+                        <span class="input-error">
+                            {{ "form_errors.max_length" | translate : {
+                            value: formGroup.get('description')?.errors?.['maxlength']?.requiredLength
+                            } }}
+                        </span>
+                        }
+                        @else if ( formGroup.get('description')?.touched &&
+                        formGroup.get('description')?.errors?.['required'] ) {
+                        <span class="input-error">
+                            {{ "form_errors.required" | translate }}
+                        </span>
+                        }
+
+                    </div>
+                </app-input>
+
+                <app-input formControlName="logo" [label]="'logo.label' | translate"
+                    [placeholder]="'logo.description' | translate" [type]="'text'"
+                    [hasError]="formGroup.get('logo')?.touched ? formGroup.get('logo')?.errors : null">
+                    <div ngProjectAs="error-messages">
+
+                        @if (formGroup.get('logo')?.errors?.['invalidUrl'] ) {
+                        <span class="input-error">
+                            {{ "form_errors.no_url" | translate }}
+                        </span>
+                        }
+                        @else if ( formGroup.get('logo')?.touched && formGroup.get('logo')?.errors?.['required'] ) {
+                        <span class="input-error">
+                            {{ "form_errors.required" | translate }}
+                        </span>
+                        }
+                    </div>
+
+                </app-input>
             </div>
             <div class="form-fields">
-                <app-date-picker
-                    formControlName="release"
-                    [label]="'release.date' | translate"
-                ></app-date-picker>
-              <app-input
-                    formControlName="revision"
-                    [label]="'revision.label' | translate"
-                    [placeholder]="'revision.description' | translate"
-                    [type]="'text'"
-                ></app-input>
+                <app-date-picker formControlName="date_release" [label]="'release.date' | translate"
+                    [hasError]="formGroup.get('date_release')?.touched ? formGroup.get('date_release')?.errors : null">
+                    <div ngProjectAs="error-messages">
+                        @if (formGroup.get('date_release')?.errors?.['invalidDateFormat']) {
+                        <span class="input-error">
+                            {{ "form_errors.date_format" | translate : {
+                            value: formGroup.get('date_release')?.errors?.['invalidDateFormat']
+                            } }}
+                        </span>
+                        }
+                        @else if (formGroup.get('date_release')?.errors?.['minDate']) {
+                        <span class="input-error">
+                            {{ "form_errors.higher_date" | translate : {
+                            value: formGroup.get('date_release')?.errors?.['minDate'] | translate
+                            } }}
+                        </span>
+                        }
+                        @else if ( formGroup.get('date_release')?.touched &&
+                        formGroup.get('date_release')?.errors?.['required'] )
+                        {
+                        <span class="input-error">
+                            {{ "form_errors.required" | translate }}
+                        </span>
+                        }
+                    </div>
+
+                </app-date-picker>
+                <app-input formControlName="date_revision" [label]="'revision.date' | translate" [type]="'text'"
+                    [hasError]="formGroup.get('date_revision')?.touched ? formGroup.get('date_revision')?.errors : null"></app-input>
             </div>
         </form>
         <footer class="main-form__footer">
-            <app-button
-                [color]="'secondary'"
-                [label]="'restart.label' | translate"
-            ></app-button>
-            <app-button [label]="'send.label' | translate"></app-button>
+            <app-button [color]="'secondary'" [label]="'restart.label' | translate"
+                (afterClick)="onRestart()"></app-button>
+            <app-button [label]="(loading().saving ? 'send.ing' :'send.label') | translate"
+                [disabled]="!formGroup.valid || loading().saving || !formGroup.dirty"
+                (afterClick)="onSubmit()"></app-button>
         </footer>
     </article>
 </main>

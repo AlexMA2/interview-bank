@@ -1,28 +1,11 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, OnInit, forwardRef, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-    ControlValueAccessor,
-    NG_VALUE_ACCESSOR,
-    FormControl,
-    FormGroupDirective,
-} from '@angular/forms';
-import { input } from '@angular/core';
+import { Component, computed, forwardRef, input, output, signal } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import { DateFormat } from '@shared/utils/functions/dates';
 
-/**
- * @description
- * Enumeration of supported date formats.
- */
-export enum DateFormat {
-    /** YYYY-MM-DD format, e.g., 2025-08-16 */
-    YYYY_MM_DD = 'YYYY-MM-DD',
-    /** MM/DD/YYYY format, e.g., 08/16/2025 */
-    MM_DD_YYYY = 'MM/DD/YYYY',
-    /** DD/MM/YYYY format, e.g., 16/08/2025 */
-    DD_MM_YYYY = 'DD/MM/YYYY',
-}
+import { Dates } from '../../utils/functions/dates';
 
 @Component({
     selector: 'app-date-picker',
@@ -38,92 +21,53 @@ export enum DateFormat {
         },
     ],
 })
-export class DatePickerComponent implements ControlValueAccessor, OnInit {
+export class DatePickerComponent implements ControlValueAccessor {
     public readonly label = input<string | undefined>();
-    /**
-     * The name of the form control bound to this component.
-     * Required for error message validation.
-     */
-    public formControlName = input.required<string>();
+
 
     /**
      * The date format to display in the input. Defaults to YYYY-MM-DD.
      */
-    public format = input<DateFormat>(DateFormat.YYYY_MM_DD);
-
-    /**
-     * A record of validation errors where the key is the error code
-     * and the value is the corresponding message.
-     * Example: { 'required': 'Date is required.' }
-     */
-    public errors = input<Record<string, string>>({});
-
-    /**
-     * The reactive form control associated with this component.
-     * Injected from the parent component's FormGroupDirective.
-     */
-    public control!: FormControl;
+    public format = input<DateFormat>(DateFormat.DD_MM_YYYY);
 
     /**
      * The current date value of the component.
      */
     protected date = new FormControl<string | null>(null);
 
-    /**
-     * A computed signal that returns the active error messages based on the
-     * control's validation state and the provided `errors` input.
-     */
-    public activeErrors = computed(() => {
-        const activeErrors: Record<string, string> = {};
-        if (this.control?.touched && this.control?.errors) {
-            for (const errorKey of Object.keys(this.errors())) {
-                if (this.control.errors[errorKey]) {
-                    activeErrors[errorKey] = this.errors()[errorKey];
-                }
-            }
-        }
-        return activeErrors;
-    });
+    public displayedDate = signal<string>('');
 
     /**
      * function for ControlValueAccessor.
      */
-    protected onChange: (value: any) => void = () => {};
+    protected onChange: (value: any) => void = () => { };
 
     /**
      * function for ControlValueAccessor.
      */
-    protected onTouched: () => void = () => {};
+    protected onTouched: () => void = () => { };
     /**
      * A unique identifier for the input
      */
     protected readonly customId = computed(() => crypto.randomUUID());
-    /**
-     * Initializes the component.
-     * Retrieves the form control from the parent form group directive.
-     */
-    ngOnInit(): void {
-        const formGroupDirective = inject(FormGroupDirective);
-        const control = formGroupDirective.form.get(this.formControlName());
-        if (control instanceof FormControl) {
-            this.control = control;
-        } else {
-            throw new Error(
-                `[DatePickerComponent]: No valid FormControl found for name "${this.formControlName()}".`
-            );
-        }
-    }
+
+    public dateSelected = output<Date | null>();
+
+    public readonly hasError = input<boolean, ValidationErrors | null | undefined>(false, {
+        transform: (value) => value !== null && value !== undefined && Object.keys(value).length > 0,
+    });
+
     /**
      * Writes a new value from the form model to the view.
      * @param value The new value from the form model.
      */
     public writeValue(value: any): void {
         if (value instanceof Date) {
-            this.date.setValue(this.formatDate(value));
+            this.date.setValue(Dates.formatDate(value, this.format()));
         } else if (typeof value === 'string') {
             const date = new Date(value);
             if (!isNaN(date.getTime())) {
-                this.date.setValue(this.formatDate(date));
+                this.date.setValue(Dates.formatDate(date, this.format()));
             } else {
                 this.date.setValue(null);
             }
@@ -136,10 +80,7 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
      * @param fn The function to register.
      */
     public registerOnChange(fn: (value: any) => void): void {
-        this.onChange = (value: string) => {
-            const date = new Date(value);
-            fn(isNaN(date.getTime()) ? null : date.toISOString().split('T')[0]);
-        };
+        this.onChange = fn
     }
     /**
      * Registers a function to call when the control is touched.
@@ -169,21 +110,11 @@ export class DatePickerComponent implements ControlValueAccessor, OnInit {
     public onDateChange(event: Event): void {
         const inputElement = event.target as HTMLInputElement;
         const value = inputElement.value;
-        this.date.setValue(value);
-        this.onChange(value);
-        this.onTouched();
-    }
 
-    /**
-     * Formats a given Date object into a string based on the current format setting.
-     * @param date The Date object to format.
-     * @returns The formatted date string.
-     * @internal
-     */
-    private formatDate(date: Date): string {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        const date = new Date(value + 'T00:00:00');
+        this.dateSelected.emit(date);
+        this.date.setValue(Dates.formatDate(date, this.format()));
+        this.onChange(date);
+        this.onTouched();
     }
 }

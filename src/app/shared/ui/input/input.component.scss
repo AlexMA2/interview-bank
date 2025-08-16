@@ -19,6 +19,13 @@
     transition:
         border-color 0.2s,
         box-shadow 0.2s;
+    margin-bottom: 0.5rem;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 .input-container input:focus {
@@ -28,7 +35,7 @@
 }
 
 .input-container input:disabled {
-    background: vars.$slate-500;
+    background: vars.$slate-300;
     cursor: not-allowed;
 }
 
@@ -36,10 +43,4 @@
     margin-top: 0.25rem;
     font-size: 0.875rem;
     color: vars.$slate-700;
-}
-
-.input-error {
-    color: vars.$error-500;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
 }

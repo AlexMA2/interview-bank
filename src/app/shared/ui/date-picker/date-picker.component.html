@@ -3,19 +3,15 @@
     <label [for]="customId()">{{ label() }}</label>
     }
 
-    <input
-        [id]="customId()"
-        type="date"
-        class="date-picker-input"
-        [formControl]="date"
-        (change)="onDateChange($event)"
-        (blur)="onTouched()"
-    />
-    <div class="error-messages">
-        @for (error of activeErrors() | keyvalue; track error.key) {
-        <div class="error-message">
-            {{ error.value }}
-        </div>
-        }
+    <div [class]="'date-picker-input ' + (hasError() ? 'input-error-border' : '')">
+        <input [id]="customId() + 'date'" (change)="onDateChange($event)"  class="hidden-date" #dateInput type="date">
+        <input [id]="customId()" type="text" [formControl]="date"  (blur)="onTouched()"
+            (click)="dateInput.showPicker()" />
+
     </div>
+
+    <div class="error-container">
+        <ng-content select="error-messages"></ng-content>
+    </div>
+
 </div>

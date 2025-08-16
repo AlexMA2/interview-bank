@@ -17,8 +17,8 @@ export class ProductsService {
         return this.http.get<ApiResponse<Product[]>>(this.baseUrl);
     }
 
-    public get(id: string): Observable<ApiResponse<Product>> {
-        return this.http.get<ApiResponse<Product>>(`${this.baseUrl}/${id}`);
+    public get(id: string): Observable<Product> {
+        return this.http.get<Product>(`${this.baseUrl}/${id}`);
     }
 
     public create(product: Product): Observable<ApiResponse<Product>> {

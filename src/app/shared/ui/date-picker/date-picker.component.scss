@@ -1,15 +1,29 @@
 @use "variables" as vars;
 
 .date-picker-container {
-    position: relative;
-    display: inline-block;
-    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
     width: 100%;
+}
+
+.date-picker-container label {
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+    color: vars.$slate-800;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 1rem;
 }
 
 .date-picker-input {
     width: 100%;
-    padding: 8px 12px;
+    padding: 0.5rem 0.75rem;
     border: 1px solid vars.$slate-300;
     border-radius: 4px;
     box-sizing: border-box;
@@ -18,10 +32,17 @@
     -moz-appearance: none;
     appearance: none;
     background-color: #fff;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="gray" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13zM10 7H8v2h2V7zm0 4H8v2h2v-2zm0 4H8v2h2v-2zm4-8h-2v2h2V7zm0 4h-2v2h2v-2zm0 4h-2v2h2v-2zm4-8h-2v2h2V7zm0 4h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
     cursor: pointer;
+    margin-bottom: 0.5rem;
+
+    input[type="text"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        outline: none;
+        border: none;
+        width: 98%;
+    }
 }
 
 .date-picker-input:focus {
@@ -38,4 +59,14 @@
 
 .error-message {
     margin-top: 2px;
+}
+
+.hidden-date {
+    visibility: hidden;
+    width: 0;
+    outline: none;
+    border: none;
+    height: 0;
+    opacity: 0;
+    background-color: transparent;
 }

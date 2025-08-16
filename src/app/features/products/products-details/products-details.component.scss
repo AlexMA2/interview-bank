@@ -5,19 +5,28 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 95%;
     max-width: 840px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     padding: 1rem;
     border: 1px solid vars.$slate-300;
     border-radius: 4px;
     background-color: white;
+    box-sizing: border-box;
 
     .main-form__header {
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
         width: 100%;
         border-bottom: 1px solid vars.$slate-700;
+
+        a {
+            position: absolute;
+            left: 0;
+        }
     }
 
     .main-form__body {
@@ -42,6 +51,11 @@
             flex: 1;
 
             app-input {
+                display: flex;
+                flex: 1;
+            }
+
+            app-date-picker {
                 display: flex;
                 flex: 1;
             }

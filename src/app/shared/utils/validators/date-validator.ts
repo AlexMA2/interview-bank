@@ -1,4 +1,5 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { DateFormat, Dates } from '../functions/dates';
 
 export class DateValidator {
     /**
@@ -7,11 +8,11 @@ export class DateValidator {
      * @returns : ValidationErrors - if date is not valid, null otherwise
      */
     static dateFormat(
-        format = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/
+        format = DateFormat.DD_MM_YYYY
     ) {
         return (control: AbstractControl): ValidationErrors | null => {
             const val = control.value;
-            return val && !format.test(val) ? { invalidFormat: true } : null;
+            return Dates.validateDateFormat(val, format) ? { invalidDateFormat: format } : null;
         };
     }
 
@@ -38,8 +39,10 @@ export class DateValidator {
                 minDate.getDate()
             );
 
+            const isToday = Dates.isToday(minDate);
+
             return normalizedInput < normalizedMin
-                ? { dateTooEarly: true }
+                ? { minDate: isToday ? 'time_system.today' : Dates.formatDate(minDate, DateFormat.DD_MM_YYYY) }
                 : null;
         };
     }

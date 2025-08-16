@@ -1,0 +1,23 @@
+<div class="menu-container">
+    <!-- The button that toggles the menu's visibility -->
+    <button class="menu-button" (click)="toggleMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+            <g fill="currentColor">
+                <circle cx="10" cy="15" r="2" />
+                <circle cx="10" cy="10" r="2" />
+                <circle cx="10" cy="5" r="2" />
+            </g>
+        </svg>
+    </button>
+
+    <!-- The dropdown menu, shown with the @if block -->
+    @if (isOpen()) {
+    <div class="menu-dropdown">
+        <ul>
+            <li class="menu-item__edit"><a href="#" [routerLink]="['/products/details', id()]"> {{ 'edit.label' |
+                    translate }}</a></li>
+            <li class="menu-item__delete"><button (click)="onDelete()"> {{ 'delete.label' | translate }}</button></li>
+        </ul>
+    </div>
+    }
+</div>

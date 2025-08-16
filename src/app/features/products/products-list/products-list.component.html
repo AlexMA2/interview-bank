@@ -1,5 +1,97 @@
-<main>
-    <div>
-        <app-search-field></app-search-field>
+<main class="main-container">
+    @if (toDelete() !== null) {
+    <div class="delete-modal-container">
+        <div class="delete-modal">
+            <h3>{{ "warning.delete_product" | translate : {
+                value: toDelete()?.name
+                } }}</h3>
+            <div class="delete-modal-actions">
+                <app-button [color]="'secondary'" [label]="'cancel.label' | translate"
+                    (afterClick)="onCancelDelete()"></app-button>
+                <app-button [color]="'primary'" [label]="'confirm.label' | translate"
+                    (afterClick)="onConfirmDelete()"></app-button>
+            </div>
+        </div>
     </div>
+    }
+
+    <div class="table-controls">
+        <app-search-field (searchValue)="onSearch($event)"></app-search-field>
+        <a class="btn btn-primary" routerLink="/products/details">
+            {{ "add.label" | translate }}</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <colgroup>
+                <col span="5">
+                <col style="width: 50px;">
+            </colgroup>
+            <thead>
+
+                <tr>
+                    <th scope="col"> {{ 'logo.label' | translate}}</th>
+                    <th scope="col"> {{ 'product.name' | translate}}</th>
+                    <th scope="col"> {{ 'description.label' | translate}}</th>
+                    <th scope="col">{{ 'release.date' | translate}}</th>
+                    <th scope="col">{{ 'revision.date' | translate}}</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (data of datasource(); track data.id) {
+                <tr>
+
+                    <td class="logo-cell">
+                        <img [src]="data.logo" [alt]="data.name">
+                    </td>
+                    <td>
+                        <p>{{data.name}}</p>
+                    </td>
+                    <td>
+                        <p>{{data.description}}</p>
+                    </td>
+                    <td>
+                        <p>{{data.date_release}}</p>
+                    </td>
+
+                    <td>
+                        <p>{{data.date_revision}}</p>
+                    </td>
+                    <td class="actions-column">
+
+                        <app-item-menu [id]="data.id" (deleteId)="onDelete($event)"></app-item-menu>
+                    </td>
+                </tr>
+                }
+                @empty {
+                <tr>
+                    <td colspan="6">
+                        <p class="no-results"> {{ 'results.no_results' | translate}}</p>
+                    </td>
+                </tr>
+                }
+
+
+            </tbody>
+
+        </table>
+
+        <!-- Contenedor para la paginación y el resumen de resultados -->
+        <div class="footer-container">
+            <div> {{ datasource().length}} {{'results.label' | translate}}</div>
+            <div>
+                <span> {{ 'show_of_total.label' | translate }} </span>
+                <div class="footer-controls">
+                    <select (change)="onPageSizeChange($event)">
+                        <option>5</option>
+                        <option>10</option>
+                        <option>20</option>
+                    </select>
+                </div>
+                <span> {{ 'show_of_total.of' | translate : { value: products().length } }} </span>
+            </div>
+        </div>
+    </div>
+
 </main>

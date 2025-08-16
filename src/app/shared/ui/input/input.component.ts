@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { KeyValuePipe } from '@angular/common';
-import { Component, computed, inject, input, signal } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { Component, computed, forwardRef, input, signal } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-input',
-    imports: [KeyValuePipe],
+    imports: [TranslateModule],
     templateUrl: './input.component.html',
     styleUrl: './input.component.scss',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => InputComponent),
+            multi: true,
+        },
+    ],
 })
 export class InputComponent implements ControlValueAccessor {
     /**
@@ -24,17 +31,14 @@ export class InputComponent implements ControlValueAccessor {
      */
     public readonly type = input<string>('text');
     /**
+     * Type of the input
+     */
+    public readonly sizing = input<'fixed' | 'dynamic'>('fixed');
+    /**
      * Hint to be shown below the input
      */
     public readonly hint = input<string | undefined>();
-    /**
-     * A record of validation errors where the key is the error code
-     * and the value is the corresponding message.
-     * Example: { 'required': 'Date is required.' }
-     */
-    public readonly errorMessages = input<Record<string, string> | undefined>(
-        undefined
-    );
+
     /**
      * The value of the input
      */
@@ -47,31 +51,30 @@ export class InputComponent implements ControlValueAccessor {
      * A unique identifier for the input
      */
     protected readonly customId = computed(() => crypto.randomUUID());
-    /**
-     * function for ControlValueAccessor.
-     */
-    protected onChange: (value: any) => void = () => {};
+
+    protected isTouched = false;
 
     /**
      * function for ControlValueAccessor.
      */
-    protected onTouched: () => void = () => {};
-    /**
-     * The ngControl for the input. Used to register the value accessor.
-     */
-    public ngControl = inject(NgControl, { optional: true, self: true });
-    /**
-     * The errors of the input
-     */
-    public get errors() {
-        return this.ngControl?.control?.errors;
-    }
+    protected onChange: (value: any) => void = () => { };
 
-    constructor() {
-        if (this.ngControl) {
-            this.ngControl.valueAccessor = this;
-        }
-    }
+    /**
+     * function for ControlValueAccessor.
+     */
+    protected onTouched: () => void = () => { };
+
+    public readonly hasError = input<boolean, ValidationErrors | null | undefined>(false, {
+        transform: (value) => {
+            if (value === null || value === undefined) return false
+            const keys = Object.keys(value);
+            if (keys.length === 0) return false
+            if (keys.includes('required') && this.isTouched) return true
+            const remainingKeys = keys.filter((key) => key !== 'required');
+            return remainingKeys.length > 0
+        },
+    });
+
     /**
      * Writes a new value from the form model to the view.
      * @param value The new value from the form model.
@@ -91,7 +94,8 @@ export class InputComponent implements ControlValueAccessor {
      * @param fn The function to register.
      */
     registerOnTouched(fn: () => void): void {
-        this.onTouched = fn;
+
+        this.onTouched = () => { this.isTouched = true; fn(); };
     }
     /**
      * Sets the disabled state of the control.
