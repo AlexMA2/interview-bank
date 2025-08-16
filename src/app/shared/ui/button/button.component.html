@@ -1,0 +1,7 @@
+<button
+    [disabled]="disabled()"
+    (click)="onAfterClick()"
+    [class]="'btn btn-' + color()"
+>
+    {{ label() }}
+</button>
