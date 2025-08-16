@@ -1,0 +1,16 @@
+{
+    "extends": [
+        "plugin:@angular-eslint/recommended",
+        "standard",
+        "plugin:prettier/recommended"
+    ],
+    "plugins": [
+        "@angular-eslint",
+        "prettier"
+    ],
+    "rules": {
+        "prettier/prettier": [
+            "error"
+        ]
+    }
+}
