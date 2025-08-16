@@ -1,18 +1,19 @@
+@use "variables" as vars;
 .input-container {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
+    width: 100%;
 }
 
 .input-container label {
     margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #333;
+    font-weight: 400;
+    color: vars.$slate-800;
 }
 
 .input-container input {
     padding: 0.5rem 0.75rem;
-    border: 1px solid #ccc;
+    border: 1px solid vars.$slate-300;
     border-radius: 4px;
     font-size: 1rem;
     transition:
@@ -22,11 +23,23 @@
 
 .input-container input:focus {
     outline: none;
-    border-color: #6200ee;
+    border-color: vars.$primary-700;
     box-shadow: 0 0 0 2px rgba(98, 0, 238, 0.2);
 }
 
 .input-container input:disabled {
-    background: #f5f5f5;
+    background: vars.$slate-500;
     cursor: not-allowed;
+}
+
+.input-hint {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: vars.$slate-700;
+}
+
+.input-error {
+    color: vars.$error-500;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
 }

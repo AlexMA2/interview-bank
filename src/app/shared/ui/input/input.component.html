@@ -1,13 +1,23 @@
 <div class="input-container">
     @if (label()) {
-    <label>{{ label() }}</label>
+    <label [for]="customId()">{{ label() }}</label>
     }
     <input
+        [id]="customId()"
         [type]="type()"
-        [placeholder]="placeholder()"
+        [placeholder]="placeholder() ?? ''"
         [value]="value()"
         (input)="onInput($event)"
         (blur)="onBlur()"
         [disabled]="isDisabled()"
     />
+
+    @for (entry of (errorMessages() | keyvalue); track entry.key) {
+        @if (errors && errors[entry.key]) {
+            <span class="input-error"> {{ entry.value }} </span>
+        }
+    }
+    @if (hint()) {
+        <span class="input-hint"> {{ hint() }} </span>
+    }
 </div>
