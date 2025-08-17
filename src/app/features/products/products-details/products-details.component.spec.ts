@@ -1,24 +1,29 @@
+import { Directive, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ProductsDetailsComponent } from './products-details.component';
-import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { of, } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Product } from '../models/product.model';
-import { InputComponent } from '@shared/ui/input/input.component';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { IdVerificationService } from '@products/apis/id-verification/id-verification.service';
+import { ProductsService } from '@products/apis/products/products.service';
 import { ButtonComponent } from '@shared/ui/button/button.component';
 import { DatePickerComponent } from '@shared/ui/date-picker/date-picker.component';
-import { ProductsService } from '@products/apis/products/products.service';
-import { IdVerificationService } from '@products/apis/id-verification/id-verification.service';
-import { Directive, Input } from '@angular/core';
+import { InputComponent } from '@shared/ui/input/input.component';
+import { Observable, of } from 'rxjs';
 
-@Directive({
-    selector: '[routerLink]',
-    standalone: false
-})
-class MockRouterLinkDirective {
-    @Input() routerLink: any;
+import { Product } from '../models/product.model';
+import { ProductsDetailsComponent } from './products-details.component';
+import { MockActivatedRoute } from '@shared/utils/_tests/MockActivateRoute';
+
+@Directive({ selector: '[routerLink]', standalone: false })
+class RouterLinkStubDirective {
+  @Input('routerLink') linkParams: any;
 }
+
+const mockActivatedRoute = {
+  paramMap: of([{id: 1}]),
+  snapshot: { paramMap: convertToParamMap({ id: '123' }) },
+  root: {} // agrega root si el componente lo usa
+};
 
 describe('ProductsDetailsComponent', () => {
     let component: ProductsDetailsComponent;
@@ -28,6 +33,8 @@ describe('ProductsDetailsComponent', () => {
     let idVerificationServiceSpy: jasmine.SpyObj<IdVerificationService>;
     let translateServiceSpy: jasmine.SpyObj<TranslateService>;
     let routerSpy: jasmine.SpyObj<Router>;
+    let activatedRouteStub: MockActivatedRoute;
+
     const mockProduct: Product = {
         id: '1',
         name: 'Apple Card',
@@ -43,6 +50,7 @@ describe('ProductsDetailsComponent', () => {
         idVerificationServiceSpy = jasmine.createSpyObj('IdVerificationService', ['verify']);
         translateServiceSpy = jasmine.createSpyObj('TranslateService', ['instant', 'get']);
         routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+        activatedRouteStub = new MockActivatedRoute();
 
         await TestBed.configureTestingModule({
             imports: [
@@ -51,9 +59,9 @@ describe('ProductsDetailsComponent', () => {
                 ButtonComponent,
                 DatePickerComponent,
                 ReactiveFormsModule,
-                TranslateModule.forRoot()
+                TranslateModule.forRoot(),
             ],
-            declarations: [MockRouterLinkDirective],
+            declarations: [RouterLinkStubDirective],
             providers: [
                 { provide: ProductsService, useValue: productsServiceSpy },
                 { provide: IdVerificationService, useValue: idVerificationServiceSpy },
@@ -61,10 +69,8 @@ describe('ProductsDetailsComponent', () => {
                 { provide: Router, useValue: routerSpy },
                 {
                     provide: ActivatedRoute,
-                    useValue: {
-                        paramMap: of({ get: (key: string) => '1' }) // provide a valid ID
-                    }
-                }
+                    useValue: activatedRouteStub
+                },
             ]
         }).compileComponents();
 

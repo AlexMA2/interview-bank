@@ -100,7 +100,6 @@ export class ProductsDetailsComponent implements OnInit {
             ]),
             date_release: new FormControl<Date | null>(null, [
                 Validators.required,
-                DateValidator.dateFormat(),
                 DateValidator.minDateValidator(),
             ]),
             date_revision: new FormControl<string | null>({

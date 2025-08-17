@@ -12,7 +12,15 @@ export class DateValidator {
     ) {
         return (control: AbstractControl): ValidationErrors | null => {
             const val = control.value;
-            return Dates.validateDateFormat(val, format) ? { invalidDateFormat: format } : null;
+
+            if (typeof val !== 'string') {
+                throw new Error(
+                    'DateValidator.dateFormat: value must be a string'
+                )
+            }
+            const v = Dates.validateDateFormat(val, format)
+
+            return v ? null : { invalidDateFormat: format };
         };
     }
 

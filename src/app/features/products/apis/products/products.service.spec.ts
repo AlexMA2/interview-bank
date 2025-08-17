@@ -98,7 +98,7 @@ describe('ProductService', () => {
             date_release: '2026-01-01',
             date_revision: '2027-01-02',
         };
-        const mockResponse = { data: [updatedProduct] };
+        const mockResponse = { data: updatedProduct };
 
         service.update('1', updatedProduct).subscribe((response: ApiResponse<Product>) => {
 

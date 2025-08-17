@@ -108,6 +108,12 @@ export class Dates {
         }
     }
 
+    /**
+     * Checks if a date follows a specific format.
+     * @param value : string - date to be validated
+     * @param format : DateFormat - format to validate
+     * @returns : boolean - true if the date follorws the format, false otherwise
+     */
     static validateDateFormat(value: string, format: DateFormat): boolean {
         if (!value) return false;
 

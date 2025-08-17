@@ -5,12 +5,15 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
-    template: `<app-item-menu [id]="idSignal" (deleteId)="deleteSpy"></app-item-menu>`,
+    template: `<app-item-menu [id]="idSignal()" (deleteId)="deleteSpy($event)"></app-item-menu>`,
     standalone: false
 })
 class HostComponent {
     idSignal = signal('123'); // writable in host
-    deleteSpy = { emit: jasmine.createSpy('emit') } as any;
+    received: string | null = null;
+    deleteSpy(id: string) {
+        this.received = id;
+    }
 }
 
 describe('ItemMenuComponent', () => {
@@ -49,7 +52,8 @@ describe('ItemMenuComponent', () => {
         const menu = fixture.debugElement.children[0].componentInstance as ItemMenuComponent;
         menu.isOpen.update(() => true);
         menu.onDelete();
-        expect(host.deleteSpy.emit).toHaveBeenCalledWith('123');
+        fixture.detectChanges()
+        expect(host.received).toBe('123');
         expect(menu.isOpen()).toBeFalse();
     });
 
