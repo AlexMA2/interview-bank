@@ -27,7 +27,7 @@ import { UrlValidator } from '@shared/utils/validators/url-validator';
     styleUrl: './products-details.component.scss',
 })
 export class ProductsDetailsComponent implements OnInit {
-    protected formGroup: FormGroup;
+    public formGroup: FormGroup;
     protected readonly verificationService = inject(IdVerificationService);
     protected readonly productsService = inject(ProductsService);
     protected readonly translateService = inject(TranslateService);

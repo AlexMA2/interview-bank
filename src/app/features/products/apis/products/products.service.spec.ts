@@ -95,8 +95,8 @@ describe('ProductService', () => {
             name: 'Updated Product',
             description: 'Updated description',
             logo: 'Updated logo',
-            date_release: '2022-01-01',
-            date_revision: '2022-01-02',
+            date_release: '2026-01-01',
+            date_revision: '2027-01-02',
         };
         const mockResponse = { data: [updatedProduct] };
 

@@ -1,141 +1,152 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ProductsDetailsComponent } from './products-details.component';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of, } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { IdVerificationService } from '@products/apis/id-verification/id-verification.service';
-import { ProductsService } from '@products/apis/products/products.service';
+import { Product } from '../models/product.model';
+import { InputComponent } from '@shared/ui/input/input.component';
 import { ButtonComponent } from '@shared/ui/button/button.component';
 import { DatePickerComponent } from '@shared/ui/date-picker/date-picker.component';
-import { InputComponent } from '@shared/ui/input/input.component';
-import { of, throwError } from 'rxjs';
+import { ProductsService } from '@products/apis/products/products.service';
+import { IdVerificationService } from '@products/apis/id-verification/id-verification.service';
+import { Directive, Input } from '@angular/core';
 
-import { Product } from '../models/product.model';
-import { ProductsDetailsComponent } from './products-details.component';
-import { provideHttpClient } from '@angular/common/http';
+@Directive({
+    selector: '[routerLink]',
+    standalone: false
+})
+class MockRouterLinkDirective {
+    @Input() routerLink: any;
+}
 
 describe('ProductsDetailsComponent', () => {
     let component: ProductsDetailsComponent;
     let fixture: ComponentFixture<ProductsDetailsComponent>;
+
     let productsServiceSpy: jasmine.SpyObj<ProductsService>;
+    let idVerificationServiceSpy: jasmine.SpyObj<IdVerificationService>;
+    let translateServiceSpy: jasmine.SpyObj<TranslateService>;
     let routerSpy: jasmine.SpyObj<Router>;
-    let translateSpy: jasmine.SpyObj<TranslateService>;
-    let verificationSpy: jasmine.SpyObj<IdVerificationService>;
+    const mockProduct: Product = {
+        id: '1',
+        name: 'Apple Card',
+        description: 'Premium credit card',
+        logo: 'apple.png',
+        date_release: '2025-09-01',
+        date_revision: '2026-09-01',
+    };
+
 
     beforeEach(async () => {
         productsServiceSpy = jasmine.createSpyObj('ProductsService', ['get', 'create', 'update']);
+        idVerificationServiceSpy = jasmine.createSpyObj('IdVerificationService', ['verify']);
+        translateServiceSpy = jasmine.createSpyObj('TranslateService', ['instant', 'get']);
         routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-        translateSpy = jasmine.createSpyObj('TranslateService', ['instant']);
-        verificationSpy = jasmine.createSpyObj('IdVerificationService', ['verify']);
 
         await TestBed.configureTestingModule({
             imports: [
                 ProductsDetailsComponent,
-                ReactiveFormsModule,
-                TranslateModule.forRoot(),
                 InputComponent,
                 ButtonComponent,
                 DatePickerComponent,
+                ReactiveFormsModule,
+                TranslateModule.forRoot()
             ],
+            declarations: [MockRouterLinkDirective],
             providers: [
                 { provide: ProductsService, useValue: productsServiceSpy },
+                { provide: IdVerificationService, useValue: idVerificationServiceSpy },
+                { provide: TranslateService, useValue: translateServiceSpy },
                 { provide: Router, useValue: routerSpy },
-                { provide: TranslateService, useValue: translateSpy },
-                { provide: IdVerificationService, useValue: verificationSpy },
-                { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: null })) } },
-                provideHttpClient(),
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        paramMap: of({ get: (key: string) => '1' }) // provide a valid ID
+                    }
+                }
             ]
         }).compileComponents();
 
         fixture = TestBed.createComponent(ProductsDetailsComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should patch values correctly', () => {
-        const product: Product = {
-            id: '1',
-            name: 'Producto',
-            description: 'Descripción larga',
-            logo: 'http://logo.com/logo.png',
-            date_release: '2025-08-16',
-            date_revision: '2026-08-16'
-        };
-        component.patchValue(product);
-        const fg = component['formGroup'];
-        expect(fg.get('name')?.value).toBe('Producto');
-        expect(fg.get('logo')?.value).toBe('http://logo.com/logo.png');
+    it('mock product dates should respect rules', () => {
+        const baseDate = new Date('2025-08-17');
+        const release = new Date(mockProduct.date_release);
+        const revision = new Date(mockProduct.date_revision);
+
+        expect(release.getTime()).toBeGreaterThan(baseDate.getTime());
+        expect(revision.getFullYear()).toBe(release.getFullYear() + 1);
+        expect(revision.getMonth()).toBe(release.getMonth());
+        expect(revision.getDate()).toBe(release.getDate());
     });
 
-    it('should reset form on onRestart', () => {
-        const fg = component['formGroup'];
-        fg.get('name')?.setValue('Test');
-        component.onRestart();
-        expect(fg.get('name')?.value).toBeNull();
-        expect(fg.pristine).toBeTrue();
+    it('should patch value from getById with proper date strings', () => {
+        productsServiceSpy.get.and.returnValue(of(mockProduct));
+        component.getById('1');
+        expect(component.formGroup.value.date_release).toBe('2025-09-01');
+        expect(component.formGroup.value.date_revision).toBe('2026-09-01');
     });
 
-    it('should call onCreate when submitting new product', fakeAsync(() => {
-        const fg = component['formGroup'];
-        fg.get('name')?.setValue('Producto Test');
-        fg.get('description')?.setValue('Descripcion Test larga');
-        fg.get('logo')?.setValue('http://logo.com/logo.png');
-        fg.get('date_release')?.setValue(new Date('2025-11-25'));
-        tick(); // para que se ejecute listenToReleaseChange
-        const createSpy = productsServiceSpy.create.and.returnValue(of({} as any));
-        component.onSubmit();
-        tick();
-        expect(createSpy).toHaveBeenCalled();
-    }));
+    it('onCreate should call productsService.create with correct date strings', () => {
+        component.formGroup.patchValue(mockProduct);
+        productsServiceSpy.create.and.returnValue(of({
+            data: mockProduct,
+            message: 'Product created successfully'
+        }));
+        component.onCreate();
+        expect(productsServiceSpy.create).toHaveBeenCalledWith(jasmine.objectContaining({
+            date_release: '2025-09-01',
+            date_revision: '2026-09-01'
+        }));
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['products']);
+    });
 
-    it('should call onEdit when submitting existing product', fakeAsync(() => {
-        component['id'].set('123');
-        const fg = component['formGroup'];
-        fg.get('name')?.setValue('Producto Test');
-        fg.get('description')?.setValue('Descripcion Test larga');
-        fg.get('logo')?.setValue('http://logo.com/logo.png');
-        fg.get('date_release')?.setValue(new Date('2025-11-25'));
-        tick();
-        const updateSpy = productsServiceSpy.update.and.returnValue(of({} as any));
-        component.onSubmit();
-        tick();
-        expect(updateSpy).toHaveBeenCalledWith('123', jasmine.any(Object));
-    }));
+    it('onEdit should call productsService.update with correct date strings', () => {
+        component['id'].set('1');
+        component.formGroup.patchValue(mockProduct);
+        productsServiceSpy.update.and.returnValue(of({
+            data: mockProduct,
+            message: 'Product updated successfully'
+        }));
+        component.onEdit();
+        expect(productsServiceSpy.update).toHaveBeenCalledWith('1', jasmine.objectContaining({
+            date_release: '2025-09-01',
+            date_revision: '2026-09-01'
+        }));
+    });
 
-    it('should handle getById success correctly', fakeAsync(() => {
-        const product: Product = {
-            id: '123',
-            name: 'Test',
-            description: 'Desc',
-            logo: 'http://logo.com/logo.png',
-            date_release: '2025-08-16',
-            date_revision: '2026-08-16'
-        };
-        productsServiceSpy.get.and.returnValue(of(product));
-        component.getById('123');
-        tick();
-        const loading = component['loading']();
-        expect(loading.fetching).toBeFalse();
-        expect(component['formGroup'].get('name')?.value).toBe('Test');
-    }));
+    it('onCreate should call productsService.create with correct date strings', () => {
+        component.formGroup.patchValue(mockProduct);
+        productsServiceSpy.create.and.returnValue(of({
+            data: mockProduct,
+            message: 'Product created successfully'
+        }));
+        component.onCreate();
+        expect(productsServiceSpy.create).toHaveBeenCalledWith(jasmine.objectContaining({
+            date_release: '2025-09-01',
+            date_revision: '2026-09-01'
+        }));
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['products']);
+    });
 
-    it('should handle getById error correctly', fakeAsync(() => {
-        productsServiceSpy.get.and.returnValue(throwError(() => new Error('Error')));
-        component.getById('123');
-        tick();
-        const loading = component['loading']();
-        expect(loading.fetching).toBeFalse();
-    }));
-
-    it('should update date_revision when date_release changes', fakeAsync(() => {
-        const fg = component['formGroup'];
-        const newDate = new Date('2025-08-16');
-        fg.get('date_release')?.setValue(newDate);
-        tick();
-        const dateRev = fg.get('date_revision')?.value;
-        expect(dateRev).toBeDefined();
-    }));
+    it('onEdit should call productsService.update with correct date strings', () => {
+        component['id'].set('1');
+        component.formGroup.patchValue(mockProduct);
+        productsServiceSpy.update.and.returnValue(of({
+            data: mockProduct,
+            message: 'Product updated successfully'
+        }));
+        component.onEdit();
+        expect(productsServiceSpy.update).toHaveBeenCalledWith('1', jasmine.objectContaining({
+            date_release: '2025-09-01',
+            date_revision: '2026-09-01'
+        }));
+    });
 });

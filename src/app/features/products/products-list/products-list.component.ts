@@ -102,12 +102,13 @@ export class ProductsListComponent implements OnInit {
         });
         this.productService.delete(this.toDelete()!.id).subscribe({
             next: () => {
-                this.toDelete.set(null);
+
                 this.getProducts();
                 this.loading.update(s => {
                     s.deleting.delete(this.toDelete()!.id);
                     return s;
                 });
+                this.toDelete.set(null);
             },
             error: () => {
                 this.loading.update(s => {

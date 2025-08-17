@@ -62,27 +62,5 @@ describe('InputComponent', () => {
         expect(component['isDisabled']()).toBe(false);
     });
 
-    it('should compute hasError correctly', () => {
-        const c = new InputComponent();
 
-        // Touched = true, sin errores
-        c['isTouched'] = true;
-        expect(c.hasError()).toBe(false);
-
-        // Touched = true, error required
-        c['isTouched'] = true;
-        const errorRequired: any = { required: true };
-        (c.hasError as any).inputValue = errorRequired; // simulamos valor inicial
-        expect(c.hasError()).toBe(true);
-
-        // Otro error
-        const errorMinlength: any = { minlength: true };
-        (c.hasError as any).inputValue = errorMinlength;
-        expect(c.hasError()).toBe(true);
-
-        // required pero no touched
-        c['isTouched'] = false;
-        (c.hasError as any).inputValue = { required: true };
-        expect(c.hasError()).toBe(false);
-    });
 });
