@@ -66,7 +66,6 @@ export class ProductsListComponent implements OnInit {
     public onPageSizeChange(event: Event): void {
         const target = event.target as HTMLSelectElement;
         const pageSize = parseInt(target.value);
-        console.log('🚀 ~ ProductsListComponent ~ onPageSizeChange ~ pageSize:', pageSize)
         this.pageSize.set(pageSize as 5 | 10 | 20);
     }
 

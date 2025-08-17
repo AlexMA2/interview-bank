@@ -28,8 +28,8 @@ export class ProductsService {
     public update(
         id: string,
         product: Partial<Product>
-    ): Observable<ApiResponse<Product[]>> {
-        return this.http.put<ApiResponse<Product[]>>(
+    ): Observable<ApiResponse<Product>> {
+        return this.http.put<ApiResponse<Product>>(
             `${this.baseUrl}/${id}`,
             product
         );

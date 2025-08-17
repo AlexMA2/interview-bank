@@ -1,8 +1,15 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
-import { Component, computed, forwardRef, input, output, signal } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import { Component, computed, forwardRef, input, output } from '@angular/core';
+import {
+    ControlValueAccessor,
+    FormControl,
+    FormsModule,
+    NG_VALUE_ACCESSOR,
+    ReactiveFormsModule,
+    ValidationErrors,
+} from '@angular/forms';
 import { DateFormat } from '@shared/utils/functions/dates';
 
 import { Dates } from '../../utils/functions/dates';
@@ -22,9 +29,10 @@ import { Dates } from '../../utils/functions/dates';
     ],
 })
 export class DatePickerComponent implements ControlValueAccessor {
+    /**
+     * The label of the input.
+     */
     public readonly label = input<string | undefined>();
-
-
     /**
      * The date format to display in the input. Defaults to YYYY-MM-DD.
      */
@@ -34,9 +42,6 @@ export class DatePickerComponent implements ControlValueAccessor {
      * The current date value of the component.
      */
     protected date = new FormControl<string | null>(null);
-
-    public displayedDate = signal<string>('');
-
     /**
      * function for ControlValueAccessor.
      */
@@ -50,13 +55,16 @@ export class DatePickerComponent implements ControlValueAccessor {
      * A unique identifier for the input
      */
     protected readonly customId = computed(() => crypto.randomUUID());
-
+    /**
+     * Event emitter for date selected
+     */
     public dateSelected = output<Date | null>();
-
+    /**
+     * Indicates whether the input has an error.
+     */
     public readonly hasError = input<boolean, ValidationErrors | null | undefined>(false, {
         transform: (value) => value !== null && value !== undefined && Object.keys(value).length > 0,
     });
-
     /**
      * Writes a new value from the form model to the view.
      * @param value The new value from the form model.

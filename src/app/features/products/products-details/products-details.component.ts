@@ -9,7 +9,6 @@ import { ButtonComponent } from '@shared/ui/button/button.component';
 import { DatePickerComponent } from '@shared/ui/date-picker/date-picker.component';
 import { InputComponent } from '@shared/ui/input/input.component';
 import { DateFormat, Dates } from '@shared/utils/functions/dates';
-import { generateRandomProduct } from '@shared/utils/functions/seedProducts';
 import { DateValidator } from '@shared/utils/validators/date-validator';
 import { IdValidator } from '@shared/utils/validators/id-validator';
 import { UrlValidator } from '@shared/utils/validators/url-validator';
@@ -101,7 +100,6 @@ export class ProductsDetailsComponent implements OnInit {
         this.loading.update(s => ({ ...s, fetching: true }));
         this.productsService.get(id).subscribe({
             next: (response) => {
-                console.log('🚀 ~ ProductsDetailsComponent ~ getById ~ response:', response)
                 this.patchValue(response);
                 this.loading.update(s => ({ ...s, fetching: false }));
             },
@@ -128,7 +126,6 @@ export class ProductsDetailsComponent implements OnInit {
     }
 
     public onSubmit(): void {
-        console.log(this.formGroup.value);
         if (this.formGroup.invalid) {
             this.formGroup.markAllAsTouched();
             return
