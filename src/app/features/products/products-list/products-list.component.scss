@@ -150,7 +150,48 @@ tbody tr:hover {
     padding: 0;
 }
 
-// End of table styles
+// Paginator
+
+.paginator {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+
+    button {
+        border: 1px solid #d1d5db;
+        border-radius: 9999px;
+        aspect-ratio: 1 / 1;
+        background-color: transparent;
+        padding: 0.25rem 0.5rem;
+        cursor: pointer;
+        transition-property: background-color, border-color, color;
+        transition-duration: 150ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+            background-color: #f9fafb;
+        }
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    input {
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        background-color: transparent;
+        padding: 0.25rem 0.5rem;
+        text-align: center;
+        max-width: 24px;
+        height: 100%;
+        cursor: pointer;
+        transition-property: background-color, border-color, color;
+        transition-duration: 150ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
 
 // Modal
 

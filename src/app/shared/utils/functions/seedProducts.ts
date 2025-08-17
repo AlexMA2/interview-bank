@@ -1,7 +1,7 @@
 import { Product } from '@products/models/product.model';
 
 function randomString(minLength: number, maxLength: number): string {
-    const chars = 'ABCD EFG HIJ KL MN OP QRST UVWXY Zabcd efgh ijkl mnop qrstuv wxyz ';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123';
     const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
     return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }

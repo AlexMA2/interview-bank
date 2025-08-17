@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProductsService } from '@products/apis/products/products.service';
@@ -9,11 +10,12 @@ import { ButtonComponent } from '@shared/ui/button/button.component';
 import { SearchFieldComponent } from '@shared/ui/search-field/search-field.component';
 import { ToastComponent } from '@shared/ui/toast/toast.component';
 import { ToastService } from '@shared/ui/toast/toast.service';
-import { map } from 'rxjs';
+import { debounceTime, map } from 'rxjs';
 
 @Component({
     selector: 'app-products-list',
     imports: [SearchFieldComponent, TranslateModule, RouterModule, ButtonComponent, ItemMenuComponent,
+        ReactiveFormsModule,
         ToastComponent],
     templateUrl: './products-list.component.html',
     styleUrl: './products-list.component.scss',
@@ -36,7 +38,10 @@ export class ProductsListComponent implements OnInit {
         else {
             values = this.products()
         }
-        return values.slice(0, this.pageSize());
+        const currentPage = this.currentPage()
+        const start = (currentPage - 1) * this.pageSize();
+        const end = start + this.pageSize();
+        return values.slice(start, end);
     });
     /**
      * Contains all the products fetched by the API.
@@ -54,6 +59,31 @@ export class ProductsListComponent implements OnInit {
      * Contains the product that has to be deleted. Used to display the confirmation modal
      */
     protected toDelete = signal<Product | null>(null);
+    /**
+     * Number of pages
+     */
+    protected pages = computed(() => Math.ceil(this.products().length / this.pageSize()));
+    private currentPage = signal(1);
+    /**
+     * Form control for the page
+     */
+    protected pageControl = computed(() => {
+        const form = new FormControl(1, [Validators.min(1), Validators.max(this.pages())])
+        form.valueChanges.pipe(debounceTime(250)).subscribe((value) => {
+            console.log('🚀 ~ ProductsListComponent ~ value:', value)
+            if (!value) {
+                form.setValue(1);
+                return
+            }
+            if (value < 1) {
+                form.setValue(1);
+            } else if (value > this.pages()) {
+                form.setValue(this.pages());
+            }
+            this.currentPage.set(value);
+        })
+        return form
+    });
     /**
      * Toast service
      */
@@ -115,7 +145,7 @@ export class ProductsListComponent implements OnInit {
     public onDelete(id: string): void {
         const product = this.products().find(product => product.id === id);
 
-       this.toDelete.set(product ?? null);
+        this.toDelete.set(product ?? null);
     }
     /**
      * Closes the confirmation modal
@@ -153,7 +183,7 @@ export class ProductsListComponent implements OnInit {
                     return s;
                 });
 
-                 if (error.status === 404) {
+                if (error.status === 404) {
                     this.toast.open('error', this.translateService.instant('errors.not_found.product', { value: this.toDelete()?.id }));
                     return
                 }
@@ -161,7 +191,22 @@ export class ProductsListComponent implements OnInit {
                 this.toast.open('error', this.translateService.instant('errors.server_error'))
             }
         })
-
+    }
+    /**
+     * Changes the current page. Move to the previous
+     */
+    public onPreviousPage(): void {
+        const currenPage = this.pageControl().value
+        if (currenPage === 1 || !currenPage) return
+        this.pageControl().setValue(currenPage - 1);
+    }
+    /**
+     * Changes the current page. Move to the next
+     */
+    public onNextPage(): void {
+        const currenPage = this.pageControl().value
+        if (currenPage === this.pages() || !currenPage) return
+        this.pageControl().setValue(currenPage + 1);
     }
 
 }
