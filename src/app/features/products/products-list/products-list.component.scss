@@ -25,6 +25,10 @@
     margin-bottom: 1rem;
 }
 
+.no-results {
+    text-align: center;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -86,6 +90,7 @@ tbody tr:hover {
     border-top: 1px solid #e5e7eb;
     font-size: 0.875rem;
     color: #6b7280;
+    flex-wrap: wrap;
 
     & > div {
         display: flex;

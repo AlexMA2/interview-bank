@@ -14,14 +14,19 @@ import { debounceTime, map } from 'rxjs';
 
 @Component({
     selector: 'app-products-list',
-    imports: [SearchFieldComponent, TranslateModule, RouterModule, ButtonComponent, ItemMenuComponent,
+    imports: [
+        SearchFieldComponent,
+        TranslateModule,
+        RouterModule,
+        ButtonComponent,
+        ItemMenuComponent,
         ReactiveFormsModule,
-        ToastComponent],
+        ToastComponent,
+    ],
     templateUrl: './products-list.component.html',
     styleUrl: './products-list.component.scss',
 })
 export class ProductsListComponent implements OnInit {
-
     /**
      * Loading state of the component.
      */
@@ -31,14 +36,17 @@ export class ProductsListComponent implements OnInit {
      * It change depending on the serach value and the page size
      */
     protected datasource = computed(() => {
-        let values: Product[] = []
+        let values: Product[] = [];
         if (this.search()) {
-            values = this.products().filter(product => product.name.toLowerCase().includes(this.search()!.toLowerCase()))
+            values = this.products().filter((product) =>
+                product.name
+                    .toLowerCase()
+                    .includes(this.search()!.toLowerCase()),
+            );
+        } else {
+            values = this.products();
         }
-        else {
-            values = this.products()
-        }
-        const currentPage = this.currentPage()
+        const currentPage = this.currentPage();
         const start = (currentPage - 1) * this.pageSize();
         const end = start + this.pageSize();
         return values.slice(start, end);
@@ -62,18 +70,23 @@ export class ProductsListComponent implements OnInit {
     /**
      * Number of pages
      */
-    protected pages = computed(() => Math.ceil(this.products().length / this.pageSize()));
+    protected pages = computed(() =>
+        Math.ceil(this.products().length / this.pageSize()),
+    );
     private currentPage = signal(1);
     /**
      * Form control for the page
      */
     protected pageControl = computed(() => {
-        const form = new FormControl(1, [Validators.min(1), Validators.max(this.pages())])
+        const form = new FormControl(1, [
+            Validators.min(1),
+            Validators.max(this.pages()),
+        ]);
         form.valueChanges.pipe(debounceTime(250)).subscribe((value) => {
-            console.log('🚀 ~ ProductsListComponent ~ value:', value)
+            console.log('🚀 ~ ProductsListComponent ~ value:', value);
             if (!value) {
                 form.setValue(1);
-                return
+                return;
             }
             if (value < 1) {
                 form.setValue(1);
@@ -81,8 +94,8 @@ export class ProductsListComponent implements OnInit {
                 form.setValue(this.pages());
             }
             this.currentPage.set(value);
-        })
-        return form
+        });
+        return form;
     });
     /**
      * Toast service
@@ -104,22 +117,26 @@ export class ProductsListComponent implements OnInit {
      * Fetches all the products and manipulates the loading fetching status
      */
     private getProducts(): void {
-        this.loading.update(s => ({ ...s, fetching: true }));
-        this.productService.getAll().pipe(
-            map((response) => ({
-                ...response,
-                data: response.data.sort((a, b) => a.name.localeCompare(b.name)),
-            }))
-        ).subscribe({
-            next: (response) => {
-
-                this.products.set(response.data);
-                this.loading.update(s => ({ ...s, fetching: false }));
-            },
-            error: () => {
-                this.loading.update(s => ({ ...s, fetching: false }));
-            },
-        })
+        this.loading.update((s) => ({ ...s, fetching: true }));
+        this.productService
+            .getAll()
+            .pipe(
+                map((response) => ({
+                    ...response,
+                    data: response.data.sort((a, b) =>
+                        a.name.localeCompare(b.name),
+                    ),
+                })),
+            )
+            .subscribe({
+                next: (response) => {
+                    this.products.set(response.data);
+                    this.loading.update((s) => ({ ...s, fetching: false }));
+                },
+                error: () => {
+                    this.loading.update((s) => ({ ...s, fetching: false }));
+                },
+            });
     }
 
     /**
@@ -143,7 +160,7 @@ export class ProductsListComponent implements OnInit {
      * @param id : string - Id of the product to be deleted
      */
     public onDelete(id: string): void {
-        const product = this.products().find(product => product.id === id);
+        const product = this.products().find((product) => product.id === id);
 
         this.toDelete.set(product ?? null);
     }
@@ -157,56 +174,67 @@ export class ProductsListComponent implements OnInit {
      * Deletes the product and manage the loading deleting status
      */
     public onConfirmDelete(): void {
-        if (!this.toDelete()) return
-        this.loading.update(s => {
+        if (!this.toDelete()) return;
+        this.loading.update((s) => {
             s.deleting.add(this.toDelete()!.id);
             return s;
         });
+
         this.productService.delete(this.toDelete()!.id).subscribe({
             next: () => {
-
                 this.getProducts();
-                this.loading.update(s => {
+                this.loading.update((s) => {
                     s.deleting.delete(this.toDelete()!.id);
                     return s;
                 });
 
-                this.toast.open('success', this.translateService.instant('product.deleted', {
-                    value: this.toDelete()?.name
-                }))
+                this.toast.open(
+                    'success',
+                    this.translateService.instant('product.deleted', {
+                        value: this.toDelete()?.name,
+                    }),
+                );
 
                 this.toDelete.set(null);
             },
             error: (error: HttpErrorResponse) => {
-                this.loading.update(s => {
+                this.loading.update((s) => {
                     s.deleting.delete(this.toDelete()!.id);
                     return s;
                 });
 
                 if (error.status === 404) {
-                    this.toast.open('error', this.translateService.instant('errors.not_found.product', { value: this.toDelete()?.id }));
-                    return
+                    this.toast.open(
+                        'error',
+                        this.translateService.instant(
+                            'errors.not_found.product',
+                            { value: this.toDelete()?.id },
+                        ),
+                    );
+                    return;
                 }
 
-                this.toast.open('error', this.translateService.instant('errors.server_error'))
-            }
-        })
+                this.toast.open(
+                    'error',
+                    this.translateService.instant('errors.server_error'),
+                );
+            },
+        });
     }
     /**
      * Changes the current page. Move to the previous
      */
     public onPreviousPage(): void {
-        const currenPage = this.pageControl().value
-        if (currenPage === 1 || !currenPage) return
+        const currenPage = this.pageControl().value;
+        if (currenPage === 1 || !currenPage) return;
         this.pageControl().setValue(currenPage - 1);
     }
     /**
      * Changes the current page. Move to the next
      */
     public onNextPage(): void {
-        const currenPage = this.pageControl().value
-        if (currenPage === this.pages() || !currenPage) return
+        const currenPage = this.pageControl().value;
+        if (currenPage === this.pages() || !currenPage) return;
         this.pageControl().setValue(currenPage + 1);
     }
-
 }
