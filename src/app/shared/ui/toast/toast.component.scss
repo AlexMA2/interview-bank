@@ -1,3 +1,4 @@
+@use "variables" as vars;
 .toast-container {
     position: fixed;
     top: 1rem;
@@ -20,11 +21,11 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 
     &.success {
-        background-color: #28a745;
+        background-color: vars.$success-500;
     }
 
     &.error {
-        background-color: #dc3545;
+        background-color: vars.$error-500;
     }
 
     .close-btn {
