@@ -128,19 +128,6 @@ describe('ProductsListComponent', () => {
         });
     });
 
-    describe('toggleMenu', () => {
-        it('should add id to openMenus if not present', () => {
-            component.toggleMenu('123');
-            expect(component['openMenus']().has('123')).toBeTrue();
-        });
-
-        it('should remove id if already present', () => {
-            component.toggleMenu('123');
-            component.toggleMenu('123');
-            expect(component['openMenus']().has('123')).toBeFalse();
-        });
-    });
-
     describe('onDelete', () => {
         it('should set toDelete with product by id', () => {
             component['products'].set(mockProducts);

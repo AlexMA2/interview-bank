@@ -1,80 +1,83 @@
 {
+    "add": {
+        "label": "Agregar"
+    },
     "app": {
         "title": "Banco"
     },
-    "search": {
-        "label": "Buscar"
+    "cancel": {
+        "label": "Cancelar"
     },
-    "product": {
-        "name": "Nombre del producto"
+    "confirm": {
+        "label": "Confirmar"
+    },
+    "delete": {
+        "label": "Eliminar"
     },
     "description": {
         "label": "Descripción"
     },
-    "show_of_total": {
-        "label": "Mostrar",
-        "of": "de un total de {{ value }}"
+    "edit": {
+        "label": "Editar"
+    },
+    "form": {
+        "register": "Formulario de registro"
+    },
+    "form_errors": {
+        "date_format": "El formato de fecha debe ser {{ value }}",
+        "higher_date": "La fecha debe ser igual o mayor a {{ value }}",
+        "id_exists": "Este ID ya existe",
+        "max_length": "El campo debe tener menos de {{ value }} caracteres",
+        "min_length": "El campo debe tener al menos {{ value }} caracteres",
+        "no_url": "El campo debe ser una url",
+        "one_year_after_release": "La fecha debe ser exactamente un año posterior a la fecha de liberación",
+        "required": "Este campo es requerido",
+        "unique": "El campo debe ser único"
+    },
+    "id": {
+        "description": "Identificador único del producto",
+        "label": "ID"
+    },
+    "logo": {
+        "description": "Url de un logo representativo para el producto",
+        "label": "Logo"
+    },
+    "product": {
+        "name": "Nombre del producto",
+        "deleted": "El producto {{ value }} ha sido eliminado",
+        "edited": "El producto {{ value }} ha sido editado",
+        "created": "El producto {{ value }} ha sido creado"
     },
     "release": {
         "date": "Fecha de liberación",
         "description": "Fecha a liberar el producto para los clientes en general"
     },
-    "revision": {
-        "date": "Fecha de revisión",
-        "description": "Fecha de revisión del producto para cambiar términos y condiciones"
+    "restart": {
+        "label": "Reiniciar"
     },
     "results": {
         "label": "Resultados",
         "no_results": "No se encontraron resultados"
     },
-    "logo": {
-        "label": "Logo",
-        "description": "Url de un logo representativo para el producto"
+    "revision": {
+        "date": "Fecha de revisión",
+        "description": "Fecha de revisión del producto para cambiar términos y condiciones"
     },
-    "id": {
-        "label": "ID",
-        "description": "Identificador único del producto"
+    "search": {
+        "label": "Buscar"
     },
     "send": {
-        "label": "Enviar",
-        "ing": "Enviando..."
+        "ing": "Enviando...",
+        "label": "Enviar"
     },
-    "restart": {
-        "label": "Reiniciar"
-    },
-    "form": {
-        "register": "Formulario de registro"
-    },
-    "add": {
-        "label": "Agregar"
-    },
-    "warning": {
-        "delete_product": "¿Estás seguro de eliminar el producto {{ value }}?"
-    },
-    "confirm": {
-        "label": "Confirmar"
-    },
-    "cancel": {
-        "label": "Cancelar"
-    },
-    "form_errors": {
-        "required": "Este campo es requerido",
-        "date_format": "El formato de fecha debe ser {{ value }}",
-        "no_url": "El campo debe ser una url",
-        "unique": "El campo debe ser único",
-        "id_exists": "Este ID ya existe",
-        "min_length": "El campo debe tener al menos {{ value }} caracteres",
-        "max_length": "El campo debe tener menos de {{ value }} caracteres",
-        "higher_date": "La fecha debe ser igual o mayor a {{ value }}",
-        "one_year_after_release": "La fecha debe ser exactamente un año posterior a la fecha de liberación"
+    "show_of_total": {
+        "label": "Mostrar",
+        "of": "de un total de {{ value }}"
     },
     "time_system": {
         "today": "Hoy"
     },
-    "edit": {
-        "label": "Editar"
-    },
-    "delete": {
-        "label": "Eliminar"
+    "warning": {
+        "delete_product": "¿Estás seguro de eliminar el producto {{ value }}?"
     }
 }
